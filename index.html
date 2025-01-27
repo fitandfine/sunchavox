@@ -1,9 +1,167 @@
-<html>
-  <head>
-    
-  </head>
-  <body>
-    
-  </body>
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Tool for Suncha Vox</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #333;
+            --background-color: #f4f4f4;
+            --text-color: #fff;
+            --font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background: url('profile.jpg') no-repeat center center/cover;
+            color: var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        textarea {
+            width: 90%;
+            height: 150px;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 1rem;
+            resize: none;
+            background: var(--background-color);
+            color: var(--secondary-color);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #388e3c;
+        }
+
+        footer {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--text-color);
+            padding: 10px;
+            position: relative;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Reading Tool for Suncha Vox</h1>
+    </header>
+
+    <div class="container">
+        <textarea id="textInput" placeholder="Paste your text here..."></textarea>
+
+        <div class="controls">
+            <button onclick="startReading()">Play</button>
+            <button onclick="pauseReading()">Pause</button>
+            <button onclick="stopReading()">Stop</button>
+            <label for="speed">Speed:</label>
+            <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1" onchange="updateSpeed()">
+        </div>
+    </div>
+
+    <footer>
+        Built with ❤️ by <a href="https://fitandfine.github.io/anup/" target="_blank">Anup</a>
+    </footer>
+
+    <script>
+        let synth = window.speechSynthesis;
+        let utterance = null;
+        let isPaused = false;
+
+        function startReading() {
+            const text = document.getElementById('textInput').value;
+            if (!utterance || synth.speaking === false) {
+                utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = parseFloat(document.getElementById('speed').value);
+                synth.speak(utterance);
+            } else if (isPaused) {
+                synth.resume();
+                isPaused = false;
+            }
+        }
+
+        function pauseReading() {
+            if (synth.speaking) {
+                synth.pause();
+                isPaused = true;
+            }
+        }
+
+        function stopReading() {
+            if (synth.speaking) {
+                synth.cancel();
+                utterance = null;
+                isPaused = false;
+            }
+        }
+
+        function updateSpeed() {
+            if (utterance) {
+                utterance.rate = parseFloat(document.getElementById('speed').value);
+            }
+        }
+    </script>
+</body>
 </html>
